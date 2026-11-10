@@ -129,6 +129,18 @@ void SdCardFontSystem::begin(GfxRenderer& renderer) {
 #endif
 }
 
+void SdCardFontSystem::ensureUiFallbackFont(GfxRenderer& renderer) {
+#if CROSSINK_SCALABLE_FONTS
+  if (SETTINGS.sdFontFamilyName[0] == '\0') return;
+  ensureLoaded(renderer);
+  // Same policy as the reader: a resident scalable family keeps its small
+  // catalog; otherwise drop it to free heap.
+  if (!hasResidentScalableFamily(SETTINGS.sdFontFamilyName)) releaseRegistry();
+#else
+  (void)renderer;
+#endif
+}
+
 int SdCardFontSystem::ensureBuiltInReaderFont(GfxRenderer& renderer) {
 #if CROSSINK_SCALABLE_FONTS
   ensureScalableBuiltinFamily(renderer, SETTINGS.fontFamily == CrossPointSettings::BITTER ? 1 : 0);

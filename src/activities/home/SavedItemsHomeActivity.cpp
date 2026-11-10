@@ -15,6 +15,7 @@
 #include "CrossPointState.h"
 #include "FileBrowserActionActivity.h"
 #include "MappedInputManager.h"
+#include "SdCardFontSystem.h"
 #include "activities/util/ConfirmationActivity.h"
 #include "components/CompactHeader.h"
 #include "components/TouchHeaderBackButton.h"
@@ -87,6 +88,8 @@ void SavedItemsHomeActivity::reloadSavedBooks() {
 
 void SavedItemsHomeActivity::onEnter() {
   Activity::onEnter();
+  // Japanese/CJK book titles need the SD font registered as a UI fallback.
+  sdFontSystem.ensureUiFallbackFont(renderer);
   reloadSavedBooks();
   selectedIndex = 0;
   topIndex = 0;

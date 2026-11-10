@@ -364,6 +364,8 @@ const char* FileBrowserActivity::entryNameAt(size_t row) {
 
 void FileBrowserActivity::onEnter() {
   Activity::onEnter();
+  // Japanese/CJK book titles need the SD font registered as a UI fallback.
+  sdFontSystem.ensureUiFallbackFont(renderer);
 
   fileNameBuffer = makeUniqueNoThrow<char[]>(NAME_BUFFER_SIZE);
   if (!fileNameBuffer) {

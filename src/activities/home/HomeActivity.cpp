@@ -31,6 +31,7 @@
 #include "CrossPointState.h"
 #include "GlobalActions.h"
 #include "MappedInputManager.h"
+#include "SdCardFontSystem.h"
 #include "OpdsServerStore.h"
 #include "RecentBookProgress.h"
 #include "RecentBooksStore.h"
@@ -811,6 +812,8 @@ void HomeActivity::loadRecentCovers(int coverHeight) {
 
 void HomeActivity::onEnter() {
   Activity::onEnter();
+  // Japanese/CJK book titles need the SD font registered as a UI fallback.
+  sdFontSystem.ensureUiFallbackFont(renderer);
 
   hasOpdsServers = OPDS_STORE.hasServers();
   if (UITheme::hasCoverGridHome()) {

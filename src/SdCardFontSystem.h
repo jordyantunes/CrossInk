@@ -32,6 +32,12 @@ class SdCardFontSystem {
   /// Also re-discovers if the registry has been marked dirty (e.g. by web upload).
   void ensureLoaded(GfxRenderer& renderer);
 
+  /// Load the selected SD font so UI screens can use it as a CJK fallback for
+  /// book titles. Scalable (S3) builds defer the font load until a reader
+  /// needs it, so list screens call this on enter. No-op on bitmap builds,
+  /// which already load the selected font at boot.
+  void ensureUiFallbackFont(GfxRenderer& renderer);
+
   /// Prepare the selected built-in family before using it as a reader fallback.
   int ensureBuiltInReaderFont(GfxRenderer& renderer);
 
