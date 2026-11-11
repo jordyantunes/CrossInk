@@ -220,6 +220,15 @@ EpdFontFamily::GlyphData EpdFontFamily::getGlyphData(const uint32_t cp, const St
     return glyphData;
   }
 
+  // SD card fonts load glyphs outside the prewarmed set on demand.
+  const EpdFont* font = getFont(style);
+  for (const EpdFont* candidate : {font, font != regular ? regular : nullptr}) {
+    if (!candidate || !candidate->data->glyphMissHandler) continue;
+    if (const EpdGlyph* glyph = candidate->data->glyphMissHandler(candidate->data->glyphMissCtx, cp)) {
+      return {candidate->data, glyph};
+    }
+  }
+
   if (cp != REPLACEMENT_GLYPH) {
     return getGlyphData(REPLACEMENT_GLYPH, style);
   }
@@ -232,6 +241,10 @@ const EpdGlyph* EpdFontFamily::getGlyph(const uint32_t cp, const Style style) co
 
 uint32_t EpdFontFamily::getFallbackCodepoint(const uint32_t cp, const Style style) const {
   if (findGlyphData(cp, style).glyph) return cp;
+  // SD card fonts keep only prewarmed glyphs resident. Text outside a reader
+  // page (UI CJK fallback, dictionary rows) is loaded on demand by getGlyph(),
+  // so keep any codepoint the font covers instead of replacing it.
+  if (hasCodepoint(cp, style)) return cp;
   const uint32_t aliasCp = syntheticGlyph::aliasCodepoint(cp);
   if (aliasCp != cp) {
     return findGlyphData(aliasCp, style).glyph ? aliasCp : REPLACEMENT_GLYPH;

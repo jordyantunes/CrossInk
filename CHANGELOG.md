@@ -1,3 +1,9 @@
+## [Unreleased]
+
+### Fixed
+
+- Book titles, chapter names, file names, and dictionary suggestions in Japanese and other CJK scripts now render in the interface when a CJK `.cpfont` or TTF SD-card font is selected, instead of showing replacement boxes. On the Sticky, the selected SD font now also loads on Home, File Browser, and Saved Items, not only after opening a book.
+
 ## [v1.6.1] - 2026-10-03
 
 ### Added
